@@ -1,7 +1,10 @@
 #include <QApplication>
 #include <FelgoApplication>
-
+#include <QOperatingSystemVersion>
 #include <QQmlApplicationEngine>
+#include <QQmlContext>
+
+#include "myglobalobject.h"
 
 // uncomment this line to add the Live Client Module and use live reloading with your custom C++ code
 //#include <FelgoLiveClient>
@@ -18,6 +21,20 @@ int main(int argc, char *argv[])
 
     QQmlApplicationEngine engine;
     felgo.initialize(&engine);
+
+    // Displays the name of the Operating Systems
+    QOperatingSystemVersion operatingSystem = QOperatingSystemVersion::current();
+    qDebug()<< operatingSystem << Qt::endl;
+    QOperatingSystemVersion::OSType a = QOperatingSystemVersion::currentType();
+    qDebug()<< "Operating System Code = " << a << Qt::endl;
+
+    // add global c++ object to the QML context as a property
+    MyGlobalObject* myGlobal = new MyGlobalObject();
+    myGlobal->doSomething("TEXT FROM C++");
+    engine.rootContext()->setContextProperty("myGlobalObject", myGlobal); // the object will be available in QML with name "myGlobalObject"
+
+
+
 
     // Set an optional license key from project file
     // This does not work if using Felgo Live, only for Felgo Cloud Builds and local builds
